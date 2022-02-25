@@ -7,11 +7,13 @@ import colorRouter from "./modules/colors/router.js";
 import orderRouter from "./modules/orders/router.js";
 import orderProductRouter from "./modules/orderProducts/router.js";
 import productRouter from "./modules/products/router.js";
+import expressValidator from "express-validator";
 
 const app = express();
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
+app.use(expressValidator());
 
 app.use('/user', userRouter);
 app.use('/brand', brandRouter);

@@ -1,5 +1,5 @@
 import express from "express";
-import { checkBrandIdQueryValidator, checkCategoryIdQueryValidator, checkCountIdQueryValidator, checkIdQueryValidator } from "../../validation/validation.js";
+import { checkBrandIdQueryValidator, checkCategoryIdQueryValidator, checkIdQueryValidator } from "../../validation/validation.js";
 import { createData, deleteData, getProduct, updateData, getProductByBrand, getProductByCategory, getProductById, getProductCount } from "./controller.js";
 
 const router = express.Router();

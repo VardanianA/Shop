@@ -1,7 +1,12 @@
-import { Brand } from '../../models/models.js';
+import { Brand, Product } from '../../models/models.js';
 
 export const getData = (req, res) => {
-    Brand.findAll({ raw: true }).then(brands => {
+    Brand.findAll({
+        raw: true,
+        include: {
+            model: Product
+        }
+    }).then(brands => {
         res.status(200).send(brands);
     }).catch(err => res.status(404).send('Page not Found ', err));
 }

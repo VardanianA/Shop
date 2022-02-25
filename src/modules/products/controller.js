@@ -1,4 +1,4 @@
-import { Brand, Product } from '../../models/models.js';
+import { Brand, Product, Category, Color } from '../../models/models.js';
 
 // get
 export const getProduct = (req, res) => {
@@ -6,8 +6,6 @@ export const getProduct = (req, res) => {
         res.status(200).send(products);
     }).catch(err => res.status(404).send('Page not Found ', err));
 }
-
-// Get products full data -> return product list join brand, category, color
 
 //get all available products (count > 0)
 export const getProductCount = (req, res) => {
@@ -33,11 +31,17 @@ export const getProductByBrand = (req, res) => {
 }
 
 //get products by category
+// Get products full data -> return product list join brand, category, color
 export const getProductByCategory = (req, res) => {
     Product.findAll({
         where: {
             categoryid: req.query.categoryid
-        }
+        },
+        include: [
+            { model: Brand },
+            { model: Color },
+            { model: Category }
+        ]
     }).then(categories => { res.status(200).send(categories) })
         .catch(err => res.status(404).send('Page not Found ', err));
 }

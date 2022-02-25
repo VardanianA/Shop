@@ -1,8 +1,8 @@
-import validator, { check, param, validationResult } from "express-validator";
+import check from "express-validator/check/index.js";
 
 // query stugox validation
-export const idValidation = (value) => 
-    check(value)
+export const idValidation = (value) =>
+    check.query(value)
         .isInt()
         .withMessage(`${value} is Not Defined`)
         .not()
@@ -10,27 +10,18 @@ export const idValidation = (value) =>
         .trim();
 
 // middleware
-export async function checkCountIdQueryValidator(req, res, next) {
-    try {
-        await Promise.all([
-            idValidation('count')
-        ].map(functionItem => functionItem(req, res, () => null)));
-        validationResult(req).throw();
-        return next();
-    } catch (error) {
-        return next(error);
-    }
-}
-
 export async function checkBrandIdQueryValidator(req, res, next) {
     try {
         await Promise.all([
             idValidation('brandid')
         ].map(functionItem => functionItem(req, res, () => null)));
-        validationResult(req).throw();
+        const result = check.validationResult(req);
+        const hasErrors = !result.isEmpty();
+        if (hasErrors) {
+            res.status(400).send('Validation faild');
+        }
         return next();
     } catch (error) {
-        console.log('Error: ', error)
         return next(error);
     }
 }
@@ -40,6 +31,11 @@ export async function checkCategoryIdQueryValidator(req, res, next) {
         await Promise.all([
             idValidation('categoryid')
         ].map(functionItem => functionItem(req, res, () => null)));
+        const result = check.validationResult(req);
+        const hasErrors = !result.isEmpty();
+        if (hasErrors) {
+            res.status(400).send('Validation faild');
+        }
         return next();
     } catch (error) {
         return next(error);
@@ -51,6 +47,11 @@ export async function checkIdQueryValidator(req, res, next) {
         await Promise.all([
             idValidation('id')
         ].map(functionItem => functionItem = (req, res, () => null)));
+        const result = check.validationResult(req);
+        const hasErrors = !result.isEmpty();
+        if (hasErrors) {
+            res.status(400).send('Validation faild');
+        }
         return next();
     } catch (error) {
         return next(error);
