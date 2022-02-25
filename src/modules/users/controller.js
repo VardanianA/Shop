@@ -1,4 +1,4 @@
-import { User } from '../../models/models.js';
+import { User } from '../../models/models';
 
 export const getData = (req, res) => {
     User.findAll({ raw: true }).then(users => {

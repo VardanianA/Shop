@@ -1,4 +1,4 @@
-import check from "express-validator/check/index.js";
+import check from "express-validator/check/index";
 
 // query stugox validation
 export const idValidation = (value) =>

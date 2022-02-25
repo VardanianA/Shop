@@ -1,8 +1,17 @@
-import { Brand, Product, Category, Color } from '../../models/models.js';
+import { Brand, Product, Category, Color } from '../../models/models';
 
 // get
-export const getProduct = (req, res) => {
-    Product.findAll({ raw: true }).then(products => {
+export const getProducts = (req, res) => {
+    Product.findAll({
+        include: [
+            { model: Brand },
+            { model: Color },
+            { model: Category }
+        ],
+        order: [
+            [req.query.field, 'ASC']
+        ]
+    }).then(products => {
         res.status(200).send(products);
     }).catch(err => res.status(404).send('Page not Found ', err));
 }
@@ -22,9 +31,11 @@ export const getProductByBrand = (req, res) => {
             where: {
                 brandid: req.query.brandid
             },
-            include: [{
-                model: Brand
-            }]
+            include: [
+                { model: Brand },
+                { model: Color },
+                { model: Category }
+            ]
         })
         .then(brands => { res.status(200).send(brands) })
         .catch(err => res.status(404).send('Page not Found ', err));

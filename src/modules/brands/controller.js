@@ -1,4 +1,4 @@
-import { Brand, Product } from '../../models/models.js';
+import { Brand, Product } from '../../models/models';
 
 export const getData = (req, res) => {
     Brand.findAll({

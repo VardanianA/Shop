@@ -1,4 +1,4 @@
-import { Category } from '../../models/models.js';
+import { Category } from '../../models/models';
 
 export const getData = (req, res) => {
     Category.findAll({ raw: true }).then(categories => {

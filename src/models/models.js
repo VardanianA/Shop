@@ -1,10 +1,10 @@
-import Product  from './products/models.js'
-import Order from './orders/models.js';
-import User from './users/models.js';
-import Color from './colors/models.js';
-import Category from './categories/models.js';
-import Brand from './brands/models.js';
-import orderProduct from './orderProducts/models.js';
+import Product  from './products/models'
+import Order from './orders/models';
+import User from './users/models';
+import Color from './colors/models';
+import Category from './categories/models';
+import Brand from './brands/models';
+import orderproduct from './orderProducts/models';
 
 User.hasMany(Order, { foreignKey: "usersid" });
 Order.belongsTo(User, { foreignKey: "usersid" });
@@ -18,8 +18,8 @@ Product.belongsTo(Color, { foreignKey: "colorid" });
 Category.hasMany(Product, {foreignKey: "categoryid"});
 Product.belongsTo(Category, { foreignKey: "categoryid" });
 
-Product.belongsToMany(Order, { through: orderProduct });
-Order.belongsToMany(Product, { through: orderProduct });
+Product.belongsToMany(Order, { through: orderproduct });
+Order.belongsToMany(Product, { through: orderproduct });
 
 
 User.sync();
@@ -28,6 +28,6 @@ Brand.sync();
 Product.sync();
 Color.sync();
 Category.sync();
-orderProduct.sync();
+orderproduct.sync();
 
-export { User, Order, Brand, Product, Color, Category, orderProduct };
+export { User, Order, Brand, Product, Color, Category, orderproduct };

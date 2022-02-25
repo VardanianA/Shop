@@ -1,10 +1,10 @@
 import express from "express";
-import { checkBrandIdQueryValidator, checkCategoryIdQueryValidator, checkIdQueryValidator } from "../../validation/validation.js";
-import { createData, deleteData, getProduct, updateData, getProductByBrand, getProductByCategory, getProductById, getProductCount } from "./controller.js";
+import { checkBrandIdQueryValidator, checkCategoryIdQueryValidator, checkIdQueryValidator } from "../../validation/validation";
+import { createData, deleteData, getProducts, updateData, getProductByBrand, getProductByCategory, getProductById, getProductCount } from "./controller";
 
 const router = express.Router();
 
-router.get('/', getProduct);
+router.get('/', getProducts);
 router.get('/count', getProductCount);
 router.get('/brand', checkBrandIdQueryValidator, getProductByBrand);
 router.get('/category', checkCategoryIdQueryValidator, getProductByCategory);

@@ -1,5 +1,5 @@
 import Sequelize, { Model } from "sequelize";
-import { sequelize } from "../index.js";
+import { sequelize } from "../index";
 
 export default class Color extends Model { }
 Color.init({

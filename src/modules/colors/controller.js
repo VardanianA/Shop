@@ -1,4 +1,4 @@
-import { Color } from '../../models/models.js';
+import { Color } from '../../models/models';
 
 export const getData = (req, res) => {
     Color.findAll({ raw: true }).then(colors => {
