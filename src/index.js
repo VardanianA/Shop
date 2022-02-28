@@ -8,6 +8,7 @@ import orderRouter from "./modules/orders/router";
 import orderProductRouter from "./modules/orderProducts/router";
 import productRouter from "./modules/products/router";
 import expressValidator from "express-validator";
+import createError from "http-errors";
 
 const app = express();
 
@@ -22,5 +23,8 @@ app.use('/color', colorRouter);
 app.use('/order', orderRouter);
 app.use('/orderProduct', orderProductRouter);
 app.use('/product', productRouter);
+app.use((req, res, next) => {
+    next(createError(404));
+});
 
 app.listen(3000);
