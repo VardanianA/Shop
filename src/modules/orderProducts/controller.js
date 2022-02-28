@@ -1,17 +1,21 @@
 import { orderproduct } from '../../models/models';
 
+//get
 export const getData = (req, res) => {
     orderproduct.findAll({ raw: true }).then(orderProducts => {
-        res.status(200).send(orderProducts);
-    }).catch(err => res.status(404).send('Page not Found ', err));
+        if (orderProducts) {
+            res.status(200).send(orderProducts);
+        }
+    }).catch(err => res.status(404).send('Order-Product not Found '));
 }
 
+//create
 export const createData = (req, res) => {
     orderproduct.create({
         productId: req.body.productId,
         orderId: req.body.orderId,
         count: req.body.count
-    }).then(
-        res.status(200).send('created')
-    ).catch(err => res.status(404).send('Page not Found ', err));
+    }).then(orderProducts =>
+        res.status(200).send(orderProducts)
+    ).catch(err => res.status(400).send("Order-Products doesn't created"));
 }
