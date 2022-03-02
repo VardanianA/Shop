@@ -1,20 +1,32 @@
-import Sequelize, { Model } from "sequelize";
-import { sequelize } from "../index";
+// import Sequelize, { Model } from "sequelize";
+// import { sequelize } from "../index";
 
-export default class orderproduct extends Model { }
-orderproduct.init({
-    id: {
-        type: Sequelize.INTEGER,
-        autoIncrement: true,
-        primaryKey: true,
-        allowNull: false
-    },
+// export default class orderproduct extends Model { }
+// orderproduct.init({
+//     id: {
+//         type: Sequelize.INTEGER,
+//         autoIncrement: true,
+//         primaryKey: true,
+//         allowNull: false
+//     },
+//     count: {
+//         type: Sequelize.INTEGER,
+//         allowNull: false
+//     }
+// },
+//     {
+//         sequelize,
+//         modelName: "orderproduct"
+//     });
+
+import mongoose from 'mongoose';
+const { Schema } = mongoose;
+
+const orderProduct = new Schema({
     count: {
-        type: Sequelize.INTEGER,
-        allowNull: false
+        type: String,
+        required: true
     }
-},
-    {
-        sequelize,
-        modelName: "orderproduct"
-    });
+}, { timestamps: true });
+
+module.exports = mongoose.model('OrderProduct', orderProduct);
