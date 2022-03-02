@@ -1,21 +1,20 @@
-import { orderproduct } from '../../models/models';
+import OrderProduct from '../../models/orderProducts/models'
 
 //get
-export const getData = (req, res) => {
-    orderproduct.findAll({ raw: true }).then(orderProducts => {
-        if (orderProducts) {
-            res.status(200).send(orderProducts);
-        }
-    }).catch(err => res.status(404).send('Order-Product not Found '));
+export const getData = async(req, res) => {
+    const orderProduct = await OrderProduct.find({}).populate(['orderId', 'productId']);
+    res.send(orderProduct);
 }
 
 //create
 export const createData = (req, res) => {
-    orderproduct.create({
-        productId: req.body.productId,
-        orderId: req.body.orderId,
-        count: req.body.count
-    }).then(orderProducts =>
-        res.status(200).send(orderProducts)
-    ).catch(err => res.status(400).send("Order-Products doesn't created"));
+    const orderProduct = new OrderProduct(req.body);
+
+    orderProduct.save((err) => {
+        if (err) {
+            res.json({ message: err.message, type: 'danger' })
+        } else {
+            res.send('ok');
+        }
+    })
 }

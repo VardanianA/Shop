@@ -1,39 +1,20 @@
-import { Category } from '../../models/models';
+import Category from '../../models/categories/models';
 
 //get
-export const getData = (req, res) => {
-    Category.findAll({ raw: true }).then(categories => {
-        if (categories) {
-            res.status(200).send(categories);
-        }
-    }).catch(err => res.status(400).send('Categories not found'));
+export const getData = async(req, res) => {
+    const category = await Category.find({}).exec();
+    res.send(category);
 }
 
 //create
 export const createData = (req, res) => {
-    Category.create({
-        category: req.body.category
-    }).then(category => {
-        res.status(200).send(category);
-    }).catch(err => res.status(400).send("Category doesn't created"));
-}
+    const category = new Category(req.body);
 
-//delete
-export const deleteData = (req, res) => {
-    Category.destroy({
-        where: {
-            id: req.params.id
+    category.save((err) => {
+        if (err) {
+            res.json({ message: err.message, type: 'danger' })
+        } else {
+            res.send('ok');
         }
-    }).then(category => category.id ? res.status(200).send('category successfully deleted') : res.status(400).send('id not found')
-    );
-}
-
-//update
-export const updateData = (req, res) => {
-    Category.update({ category: req.body.category }, {
-        where: {
-            id: req.params.id
-        }
-    }).then(category => category.id ? res.status(200).send('category successfully updated') : res.status(400).send('id not found')
-    );
+    })
 }
