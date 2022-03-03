@@ -1,118 +1,94 @@
-import { Brand, Product, Category, Color } from '../../models/models';
+import Product from '../../models/products/models';
+const ObjectId = require('mongodb').ObjectID;
 
 // get
-export const getProducts = (req, res) => {
-    Product.findAll({
-        include: [
-            { model: Brand },
-            { model: Color },
-            { model: Category }
-        ],
-        order: [
-            [req.query.field, 'ASC']
-        ]
-    }).then(products => {
-        if (products) {
-            res.status(200).send(products);
+export const getProducts = async (req, res) => {
+    Product.find({}, (err, data) => {
+        if (err) {
+            res.status(500).json({ message: err.message })
+        } else if (data) {
+            res.status(200).send(data);
+        } else {
+            res.status(400).send('there is no such data defined')
         }
-    }).catch(err => res.status(400).send('Products not Found '));
-}
-
-//get all available products (count > 0)
-export const getProductCount = (req, res) => {
-    Product.findAndCountAll({ raw: true }).then(products => {
-        const key = products.rows.filter(el => el.count > 0);
-        res.status(200).send(key);
-    }).catch(err => res.status(404).send('Products not Found '));
-}
-
-//get products by brand
-export const getProductByBrand = (req, res) => {
-    Product.findAll(
-        {
-            where: {
-                brandid: req.query.brandid
-            },
-            include: [
-                { model: Brand },
-                { model: Color },
-                { model: Category }
-            ]
-        })
-        .then(brands => {
-            if (brands.id) {
-                res.status(200).send(brands)
-            }
-        })
-        .catch(err => res.status(400).send('Products not Found '));
-}
-
-//get products by category
-// Get products full data -> return product list join brand, category, color
-export const getProductByCategory = (req, res) => {
-    Product.findAll({
-        where: {
-            categoryid: req.query.categoryid
-        },
-        include: [
-            { model: Brand },
-            { model: Color },
-            { model: Category }
-        ]
-    }).then(categories => {
-        if (categories.id) {
-            res.status(200).send(categories)
-        }
-    })
-        .catch(err => res.status(400).send('Products not Found '));
-}
-
-//get products by id
-export const getProductById = (req, res) => {
-    Product.findAll({
-        where: {
-            id: req.query.id
-        }
-    }).then(data => {
-        if (data.id)
-            res.status(200).send(data)
-    })
-        .catch(err => res.status(400).send('Products not Found '));
+    }).populate(['brandId', 'categoryId', 'colorId']);
 }
 
 //create
 export const createData = (req, res) => {
-    Product.create({
-        name: req.body.name,
-        brandid: req.body.brandid,
-        colorid: req.body.colorid,
-        categoryid: req.body.categoryid,
-        count: req.body.count
-    }).then(products => res.status(200).send(products)
-    ).catch(err => res.status(400).send("Products doesn't created"));
+    const product = new Product(req.body);
+
+    product.save((err) => {
+        if (err) {
+            res.status(400).json({ message: err.message, type: 'danger' })
+        } else {
+            res.status(200).send('documents successfully created');
+        }
+    })
+}
+
+//get products by brand
+export const getProductByBrand = async (req, res) => {
+    Product.findOne({ "brandId": ObjectId(req.query.brandId) }, (err, data) => {
+        if (err) {
+            res.status(500).json({ message: err.message })
+        } else if (data) {
+            res.status(200).send(data);
+        } else {
+            res.status(400).send('there is no such data defined')
+        }
+    });
+}
+
+//get products by category
+export const getProductByCategory = async (req, res) => {
+    Product.findOne({ "categoryId": ObjectId(req.query.categoryId) }, (err, data) => {
+        if (err) {
+            res.status(500).json({ message: err.message })
+        } else if (data) {
+            res.status(200).send(data);
+        } else {
+            res.status(400).send('there is no such data defined')
+        }
+    }).populate(['brandId', 'categoryId', 'colorId']);
+}
+
+//get products by category
+export const getProductById = async (req, res) => {
+    Product.findOne({ "_id": ObjectId(req.query._id) }, (err, data) => {
+        if (err) {
+            res.status(500).json({ message: err.message })
+        } else if (data) {
+            res.status(200).send(data);
+        } else {
+            res.status(400).send('there is no such data defined')
+        }
+    }).populate(['brandId', 'categoryId', 'colorId']);
 }
 
 //delete
-export const deleteData = (req, res) => {
-    Product.destroy({
-        where: {
-            id: req.params.id
+export const deleteData = async (req, res) => {
+    Product.findByIdAndRemove(req.params.id, function (err, docs) {
+        if (err) {
+            res.status(500).json({ message: err.message })
         }
-    }).then(products => products.id ? res.status(200).send('products successfully deleted') : res.status(400).send("Products doesn't deleted")
-    );
+        else if (docs) {
+            res.status(200).send("documents successfully deleted");
+        } else {
+            res.status(400).send('there is no such id defined')
+        }
+    });
 }
 
 //update
-export const updateData = (req, res) => {
-    Product.update({
-        name: req.body.name,
-        brandid: req.body.brandid,
-        colorid: req.body.colorid,
-        categoryid: req.body.categoryid
-    }, {
-        where: {
-            id: req.params.id
+export const updateData = async (req, res) => {
+    Product.findByIdAndUpdate(req.params.id, req.body, (err, data) => {
+        if (err) {
+            res.status(500).json({ message: err.message, type: 'danger' });
+        } else if (data) {
+            res.status(200).send("documents successfully updated");
+        } else {
+            res.status(400).send('there is no such id defined')
         }
-    }).then(products => products.id ? res.status(200).send('products successfully updated') : res.status(400).send("Products doesn't deleted")
-    );
+    })
 }

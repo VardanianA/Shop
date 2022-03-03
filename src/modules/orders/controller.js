@@ -1,32 +1,54 @@
-import { Order, orderproduct, Product, User } from '../../models/models';
+import Order from '../../models/orders/models'
 
 //get
-export const getData = (req, res) => {
-    Order.findAll({
-        include: [
-            { model: User },
-            { model: Product }
-        ]
-    }).then(orders => {
-        if (orders) {
-            res.status(200).send(orders);
+export const getData = async (req, res) => {
+    Order.find({}, (err, data) => {
+        if (err) {
+            res.status(500).json({ message: err.message })
+        } else if (data) {
+            res.status(200).send(data);
+        } else {
+            res.status(400).send('there is no such data defined')
         }
-    }).catch(err => res.status(400).send('Orders Not Found '));
+    });
 }
 
 //create
 export const createData = (req, res) => {
-    Order.create({
-        usersid: req.body.usersid,
-    }).then((data) => {
-        if (data) {
-            req.body.prods.forEach(prod => {
-                orderproduct.create({
-                    orderid: data.id,
-                    productid: prod.id,
-                })
-            })
-            res.status(200).send('created')
+    const order = new Order(req.body);
+
+    order.save((err) => {
+        if (err) {
+            res.status(400).json({ message: err.message, type: 'danger' })
+        } else {
+            res.status(200).send('documents successfully created');
         }
-    }).catch(err => res.status(400).send('User Not Found'));
+    })
+}
+
+//delete
+export const deleteData = async (req, res) => {
+    Order.findByIdAndRemove(req.params.id, function (err, docs) {
+        if (err) {
+            res.status(500).json({ message: err.message })
+        }
+        else if (docs) {
+            res.status(200).send("documents successfully deleted");
+        } else {
+            res.status(400).send('there is no such id defined')
+        }
+    });
+}
+
+//update
+export const updateData = async (req, res) => {
+    Order.findByIdAndUpdate(req.params.id, req.body, (err, data) => {
+        if (err) {
+            res.status(500).json({ message: err.message, type: 'danger' });
+        } else if (data) {
+            res.status(200).send("documents successfully updated");
+        } else {
+            res.status(400).send('there is no such id defined')
+        }
+    })
 }

@@ -1,42 +1,54 @@
-import { Brand, Product } from '../../models/models';
+import Brand from '../../models/brands/models'
 
 //get
 export const getData = (req, res) => {
-    Brand.findAll({
-        raw: true
-    }).then(brands => {
-        if (brands) {
-            res.status(200).send(brands);
+    Brand.find({}, (err, data) => {
+        if (err) {
+            res.status(500).json({ message: err.message })
+        } else if (data) {
+            res.status(200).send(data);
+        } else {
+            res.status(400).send('there is no such data defined')
         }
-    }).catch(err => res.status(400).send('Brands not Found '));
+    });
 }
 
 //create
 export const createData = (req, res) => {
-    Brand.create({
-        brand: req.body.brand
-    }).then(brand => res.status(200).send(brand)
-    ).catch(err => res.status(400).send("Brand doesn't created"));
+    const brand = new Brand(req.body);
+
+    brand.save((err) => {
+        if (err) {
+            res.status(400).json({ message: err.message, type: 'danger' })
+        } else {
+            res.status(200).send('documents successfully created');
+        }
+    })
 }
 
 //delete
-export const deleteData = (req, res) => {
-    Brand.destroy({
-        where: {
-            id: req.params.id
+export const deleteData = async (req, res) => {
+    Brand.findByIdAndRemove(req.params.id, function (err, data) {
+        if (err) {
+            res.status(500).json({ message: err.message })
         }
-    }).then(brand => brand.id ? res.status(200).send('brand successfully deleted') : res.status(400).send("id not found")
-    );
+        else if (data) {
+            res.status(200).send("documents successfully deleted");
+        } else {
+            res.status(400).send('there is no such id defined')
+        }
+    });
 }
 
 //update
-export const updateData = (req, res) => {
-    Brand.update({
-        brand: req.body.brand
-    }, {
-        where: {
-            id: req.params.id
+export const updateData = async (req, res) => {
+    Brand.findByIdAndUpdate(req.params.id, req.body, (err, data) => {
+        if (err) {
+            res.status(500).json({ message: err.message, type: 'danger' });
+        } else if (data) {
+            res.status(200).send("documents successfully updated");
+        } else {
+            res.status(400).send('there is no such id defined')
         }
-    }).then(brand => brand && brand.id ? res.status(200).send('brand successfully updated') : res.status(400).send("id not found")
-    );
+    })
 }

@@ -1,39 +1,54 @@
-import { Category } from '../../models/models';
+import Category from '../../models/categories/models';
 
 //get
-export const getData = (req, res) => {
-    Category.findAll({ raw: true }).then(categories => {
-        if (categories) {
-            res.status(200).send(categories);
+export const getData = async (req, res) => {
+    Category.find({}, (err, data) => {
+        if (err) {
+            res.status(500).json({ message: err.message })
+        } else if (data) {
+            res.status(200).send(data);
+        } else {
+            res.status(400).send('there is no such data defined')
         }
-    }).catch(err => res.status(400).send('Categories not found'));
+    });
 }
 
 //create
 export const createData = (req, res) => {
-    Category.create({
-        category: req.body.category
-    }).then(category => {
-        res.status(200).send(category);
-    }).catch(err => res.status(400).send("Category doesn't created"));
+    const category = new Category(req.body);
+
+    category.save((err) => {
+        if (err) {
+            res.status(400).json({ message: err.message, type: 'danger' })
+        } else {
+            res.status(200).send('documents successfully created');
+        }
+    })
 }
 
 //delete
-export const deleteData = (req, res) => {
-    Category.destroy({
-        where: {
-            id: req.params.id
+export const deleteData = async (req, res) => {
+    Category.findByIdAndRemove(req.params.id, function (err, data) {
+        if (err) {
+            res.status(500).json({ message: err.message })
         }
-    }).then(category => category.id ? res.status(200).send('category successfully deleted') : res.status(400).send('id not found')
-    );
+        else if (data) {
+            res.status(200).send("documents successfully deleted");
+        } else {
+            res.status(400).send('there is no such id defined')
+        }
+    });
 }
 
 //update
-export const updateData = (req, res) => {
-    Category.update({ category: req.body.category }, {
-        where: {
-            id: req.params.id
+export const updateData = async (req, res) => {
+    Category.findByIdAndUpdate(req.params.id, req.body, (err, data) => {
+        if (err) {
+            res.status(500).json({ message: err.message, type: 'danger' });
+        } else if (data) {
+            res.status(200).send("documents successfully updated");
+        } else {
+            res.status(400).send('there is no such id defined')
         }
-    }).then(category => category.id ? res.status(200).send('category successfully updated') : res.status(400).send('id not found')
-    );
+    })
 }

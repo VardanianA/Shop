@@ -1,17 +1,14 @@
 import express from "express";
-import { checkBrandIdQueryValidator, checkCategoryIdQueryValidator, checkIdQueryValidator } from "../../validation/validation";
-import { createData, deleteData, getProducts, updateData, getProductByBrand, getProductByCategory, getProductById, getProductCount } from "./controller";
+import { createData, deleteData, getProductByBrand, getProductByCategory, getProductById, getProducts } from "./controller";
 
 const router = express.Router();
 
 router.get('/', getProducts);
-router.get('/count', getProductCount);
-router.get('/brand', checkBrandIdQueryValidator, getProductByBrand);
-router.get('/category', checkCategoryIdQueryValidator, getProductByCategory);
-router.get('/id', checkIdQueryValidator, getProductById);
+router.get('/brand', getProductByBrand);
+router.get('/category', getProductByCategory);
+router.get('/:id', getProductById);
 
 router.post('/create', createData);
 router.delete('/delete/:id', deleteData);
-router.put('/update/:id', updateData);
 
 export default router;
