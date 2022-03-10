@@ -1,11 +1,11 @@
 import express from "express";
-import { createData, deleteData, getData, updateData } from "./controller";
+import { BrandReq } from "./controller";
 
 const router = express.Router();
 
-router.get('/', getData);
-router.post('/create', createData);
-router.delete('/delete/:id', deleteData);
-router.put('/update/:id', updateData);
+router.get('/', BrandReq.getBrand);
+router.post('/create', BrandReq.createBrand);
+router.delete('/delete/:id', BrandReq.deleteBrand);
+router.put('/update/:id', BrandReq.updateBrand);
 
 export default router;
